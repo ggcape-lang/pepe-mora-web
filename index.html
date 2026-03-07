@@ -284,6 +284,10 @@
       margin-bottom: 8px;
       opacity: 0;
       animation: fadeUp 1s ease 0.5s forwards;
+      transition: text-shadow 0.4s ease;
+    }
+    .hero-title:hover {
+      text-shadow: 0 0 40px rgba(255,255,255,0.3), 0 0 80px rgba(201,168,76,0.15);
     }
 
     .hero-title-gold {
@@ -296,6 +300,12 @@
       letter-spacing: 0.05em;
       opacity: 0;
       animation: fadeUp 1s ease 0.7s forwards;
+      transition: text-shadow 0.4s ease, color 0.4s ease;
+      cursor: default;
+    }
+    .hero-title-gold:hover {
+      color: var(--dorado-claro);
+      text-shadow: 0 0 30px rgba(201,168,76,1), 0 0 60px rgba(201,168,76,0.5), 0 0 100px rgba(201,168,76,0.2);
     }
 
     .hero-divider {
@@ -1282,7 +1292,7 @@
       </h1>
       <div class="hero-divider"></div>
       <p class="hero-subtitle">La voz que transforma tus momentos especiales en recuerdos eternos</p>
-      <p class="hero-location">📍 Chile · Disponible a nivel nacional</p>
+      <p class="hero-location">CHILE · DISPONIBLE A NIVEL NACIONAL</p>
       <div class="hero-btns">
         <a href="#contacto" class="btn-primary">Cotizar mi evento</a>
         <a href="#servicios" class="btn-secondary">Ver servicios</a>
