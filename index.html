@@ -44,6 +44,11 @@
       cursor: none;
     }
 
+    @media (hover: none) {
+      body { cursor: auto; }
+      .cursor, .cursor-ring { display: none; }
+    }
+
     /* CURSOR PERSONALIZADO */
     .cursor {
       width: 12px; height: 12px;
@@ -576,12 +581,14 @@
     }
     .galeria-item:hover .galeria-placeholder { border-color: rgba(201,168,76,0.3); }
 
-    .galeria-placeholder .icon { font-size: 2rem; opacity: 0.3; }
+    .galeria-placeholder .icon { font-size: 2.5rem; opacity: 0.9; }
     .galeria-placeholder .label {
-      font-size: 0.65rem;
-      letter-spacing: 0.25em;
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: rgba(201,168,76,0.4);
+      color: var(--dorado);
+      font-weight: 400;
+      text-shadow: 0 0 20px rgba(201,168,76,0.6);
     }
 
     .galeria-nota {
