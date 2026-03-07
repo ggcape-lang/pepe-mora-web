@@ -51,28 +51,41 @@
 
     /* CURSOR PERSONALIZADO */
     .cursor {
-      width: 12px; height: 12px;
+      width: 10px; height: 10px;
       background: var(--dorado);
       border-radius: 50%;
       position: fixed;
       pointer-events: none;
-      z-index: 9999;
+      z-index: 99999;
+      left: 0; top: 0;
       transform: translate(-50%, -50%);
-      transition: transform 0.1s ease, width 0.2s, height 0.2s, background 0.2s;
-      mix-blend-mode: difference;
+      transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+      opacity: 0;
+      box-shadow: 0 0 8px rgba(201,168,76,0.8);
+    }
+    .cursor.visible { opacity: 1; }
+    .cursor.hovering {
+      width: 18px; height: 18px;
+      background: var(--dorado-claro);
+      box-shadow: 0 0 16px rgba(201,168,76,1);
     }
     .cursor-ring {
-      width: 36px; height: 36px;
-      border: 1px solid var(--dorado);
+      width: 38px; height: 38px;
+      border: 1.5px solid rgba(201,168,76,0.7);
       border-radius: 50%;
       position: fixed;
       pointer-events: none;
-      z-index: 9998;
+      z-index: 99998;
+      left: 0; top: 0;
       transform: translate(-50%, -50%);
-      transition: transform 0.15s ease, width 0.3s, height 0.3s, opacity 0.3s;
-      opacity: 0.6;
+      transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease, border-color 0.3s ease;
+      opacity: 0;
     }
-    body:hover .cursor { opacity: 1; }
+    .cursor-ring.visible { opacity: 1; }
+    .cursor-ring.hovering {
+      width: 52px; height: 52px;
+      border-color: rgba(201,168,76,0.4);
+    }
 
     /* GRAIN OVERLAY */
     body::before {
@@ -157,13 +170,14 @@
 
     /* HERO */
     #hero {
-      min-height: 100vh;
+      height: 100vh;
+      min-height: 600px;
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
       overflow: hidden;
-      padding: 120px 60px 80px;
+      padding: 80px 60px 60px;
     }
 
     .hero-bg {
@@ -362,6 +376,68 @@
       font-style: italic;
       color: var(--dorado);
       font-weight: 300;
+      transition: text-shadow 0.3s ease;
+    }
+    .section-title em:hover {
+      text-shadow: 0 0 20px rgba(201,168,76,0.9), 0 0 40px rgba(201,168,76,0.5);
+    }
+
+    /* BRILLO DORADO GLOBAL — en cualquier texto dorado al hover */
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      letter-spacing: 0.25em;
+      color: var(--dorado);
+      text-decoration: none;
+      transition: text-shadow 0.3s ease;
+    }
+    .nav-logo:hover {
+      text-shadow: 0 0 16px rgba(201,168,76,1), 0 0 32px rgba(201,168,76,0.6);
+    }
+
+    /* Shimmer keyframe para elementos dorados especiales */
+    @keyframes goldShimmer {
+      0%   { text-shadow: 0 0 8px rgba(201,168,76,0.3); }
+      50%  { text-shadow: 0 0 20px rgba(201,168,76,1), 0 0 40px rgba(201,168,76,0.6); }
+      100% { text-shadow: 0 0 8px rgba(201,168,76,0.3); }
+    }
+
+    .section-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.45em;
+      text-transform: uppercase;
+      color: var(--dorado);
+      margin-bottom: 20px;
+      display: block;
+      transition: text-shadow 0.3s;
+    }
+    .section-label:hover { animation: goldShimmer 1.5s ease infinite; }
+
+    .servicio-titulo {
+      font-family: 'Cinzel', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--blanco);
+      letter-spacing: 0.05em;
+      margin-bottom: 20px;
+      transition: color 0.3s, text-shadow 0.3s;
+    }
+    .servicio-card:hover .servicio-titulo {
+      color: var(--dorado);
+      text-shadow: 0 0 16px rgba(201,168,76,0.7);
+    }
+
+    .stat-number {
+      font-family: 'Cinzel', serif;
+      font-size: 3rem;
+      font-weight: 700;
+      color: var(--dorado);
+      line-height: 1;
+      margin-bottom: 8px;
+      transition: text-shadow 0.3s;
+    }
+    .stat-box:hover .stat-number {
+      text-shadow: 0 0 20px rgba(201,168,76,0.9);
     }
 
     .gold-line {
@@ -1558,16 +1634,50 @@
   </footer>
 
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-    // Cursor
+    // ========================
+    // CURSOR PERSONALIZADO MEJORADO
+    // ========================
     const cursor = document.getElementById('cursor');
     const ring = document.getElementById('cursorRing');
+    let ringX = 0, ringY = 0;
+    let curX = 0, curY = 0;
+    let rafId;
+
     document.addEventListener('mousemove', e => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
-      setTimeout(() => {
-        ring.style.left = e.clientX + 'px';
-        ring.style.top = e.clientY + 'px';
-      }, 80);
+      curX = e.clientX;
+      curY = e.clientY;
+      cursor.style.left = curX + 'px';
+      cursor.style.top = curY + 'px';
+      cursor.classList.add('visible');
+      ring.classList.add('visible');
+    });
+
+    // Ring sigue con suavidad
+    function animateRing() {
+      ringX += (curX - ringX) * 0.12;
+      ringY += (curY - ringY) * 0.12;
+      ring.style.left = ringX + 'px';
+      ring.style.top = ringY + 'px';
+      rafId = requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.addEventListener('mouseleave', () => {
+      cursor.classList.remove('visible');
+      ring.classList.remove('visible');
+    });
+
+    // Agrandar cursor al pasar por elementos interactivos
+    const hoverEls = document.querySelectorAll('a, button, .servicio-card, .stat-box, .testimonio-card, .audio-card, .play-btn, .progress-bar');
+    hoverEls.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.classList.add('hovering');
+        ring.classList.add('hovering');
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.classList.remove('hovering');
+        ring.classList.remove('hovering');
+      });
     });
 
     // Navbar scroll
