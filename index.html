@@ -32,6 +32,7 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    *:not(input):not(textarea):not(select) { cursor: none !important; }
 
     html { scroll-behavior: smooth; }
 
@@ -323,30 +324,8 @@
     }
     .btn-secondary:hover { border-color: var(--dorado); background: rgba(201,168,76,0.08); }
 
-    .scroll-indicator {
-      position: absolute;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 8px;
-      opacity: 0;
-      animation: fadeIn 1s ease 2s forwards;
-    }
-    .scroll-indicator span {
-      font-size: 0.6rem;
-      letter-spacing: 0.3em;
-      text-transform: uppercase;
-      color: var(--gris);
-    }
-    .scroll-line {
-      width: 1px;
-      height: 50px;
-      background: linear-gradient(to bottom, var(--dorado), transparent);
-      animation: scrollPulse 2s ease infinite;
-    }
+    .scroll-indicator { display: none; }
+    .scroll-line { display: none; }
 
     /* SECCIÓN GENÉRICA */
     section {
@@ -983,12 +962,17 @@
 
     .reveal {
       opacity: 0;
-      transform: translateY(40px);
-      transition: opacity 0.8s ease, transform 0.8s ease;
+      transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
     }
     .reveal.visible {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    /* Fallback: si JS no dispara, mostrar igual */
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; transition: none; }
     }
 
     /* ========================
@@ -1686,16 +1670,28 @@
       navbar.classList.toggle('scrolled', window.scrollY > 60);
     });
 
-    // Reveal on scroll
+    // Reveal on scroll — mejorado para evitar espacios negros
     const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+
+    // Mostrar inmediatamente los que ya están en pantalla
+    function checkReveals() {
+      reveals.forEach((el, i) => {
+        const rect = el.getBoundingClientRect();
+        const inView = rect.top < window.innerHeight * 0.95;
+        if (inView) {
+          setTimeout(() => el.classList.add('visible'), i * 60);
         }
       });
-    }, { threshold: 0.1 });
-    reveals.forEach(el => observer.observe(el));
+    }
+
+    // Ejecutar al cargar Y al hacer scroll
+    checkReveals();
+    window.addEventListener('scroll', checkReveals, { passive: true });
+
+    // Fallback: mostrar TODOS después de 1.5s por si acaso
+    setTimeout(() => {
+      reveals.forEach(el => el.classList.add('visible'));
+    }, 1500);
 
     // Formulario
     document.getElementById('contactForm').addEventListener('submit', function(e) {
