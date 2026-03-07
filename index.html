@@ -32,7 +32,6 @@
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    *:not(input):not(textarea):not(select) { cursor: none !important; }
 
     html { scroll-behavior: smooth; }
 
@@ -42,51 +41,21 @@
       font-family: 'Lato', sans-serif;
       font-weight: 300;
       overflow-x: hidden;
-      cursor: none;
     }
 
-    @media (hover: none) {
-      body { cursor: auto; }
-      .cursor, .cursor-ring { display: none; }
-    }
-
-    /* CURSOR PERSONALIZADO */
-    .cursor {
-      width: 10px; height: 10px;
-      background: var(--dorado);
+    /* RESPLANDOR DORADO QUE SIGUE EL MOUSE */
+    .mouse-glow {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(201,168,76,0.06) 0%, transparent 70%);
       border-radius: 50%;
       position: fixed;
       pointer-events: none;
-      z-index: 99999;
-      left: 0; top: 0;
+      z-index: 999;
       transform: translate(-50%, -50%);
-      transition: width 0.2s ease, height 0.2s ease, background 0.2s ease, opacity 0.2s ease;
-      opacity: 0;
-      box-shadow: 0 0 8px rgba(201,168,76,0.8);
-    }
-    .cursor.visible { opacity: 1; }
-    .cursor.hovering {
-      width: 18px; height: 18px;
-      background: var(--dorado-claro);
-      box-shadow: 0 0 16px rgba(201,168,76,1);
-    }
-    .cursor-ring {
-      width: 38px; height: 38px;
-      border: 1.5px solid rgba(201,168,76,0.7);
-      border-radius: 50%;
-      position: fixed;
-      pointer-events: none;
-      z-index: 99998;
-      left: 0; top: 0;
-      transform: translate(-50%, -50%);
-      transition: width 0.3s ease, height 0.3s ease, opacity 0.3s ease, border-color 0.3s ease;
+      transition: opacity 0.3s ease;
       opacity: 0;
     }
-    .cursor-ring.visible { opacity: 1; }
-    .cursor-ring.hovering {
-      width: 52px; height: 52px;
-      border-color: rgba(201,168,76,0.4);
-    }
+    .mouse-glow.visible { opacity: 1; }
 
     /* GRAIN OVERLAY */
     body::before {
@@ -1205,9 +1174,8 @@
 </head>
 <body>
 
-  <!-- Cursor -->
-  <div class="cursor" id="cursor"></div>
-  <div class="cursor-ring" id="cursorRing"></div>
+  <!-- Resplandor dorado que sigue el mouse -->
+  <div class="mouse-glow" id="mouseGlow"></div>
 
   <!-- WhatsApp flotante -->
   <a href="https://wa.me/56912345678?text=Hola%20Pepe%2C%20me%20interesa%20cotizar%20tus%20servicios" class="whatsapp-btn" target="_blank" title="Contactar por WhatsApp">💬</a>
@@ -1619,50 +1587,30 @@
 
   <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
     // ========================
-    // CURSOR PERSONALIZADO MEJORADO
+    // RESPLANDOR DORADO — sigue el mouse suavemente
     // ========================
-    const cursor = document.getElementById('cursor');
-    const ring = document.getElementById('cursorRing');
-    let ringX = 0, ringY = 0;
-    let curX = 0, curY = 0;
-    let rafId;
+    const glow = document.getElementById('mouseGlow');
+    let glowX = 0, glowY = 0;
+    let targetX = 0, targetY = 0;
 
     document.addEventListener('mousemove', e => {
-      curX = e.clientX;
-      curY = e.clientY;
-      cursor.style.left = curX + 'px';
-      cursor.style.top = curY + 'px';
-      cursor.classList.add('visible');
-      ring.classList.add('visible');
+      targetX = e.clientX;
+      targetY = e.clientY;
+      glow.classList.add('visible');
     });
-
-    // Ring sigue con suavidad
-    function animateRing() {
-      ringX += (curX - ringX) * 0.12;
-      ringY += (curY - ringY) * 0.12;
-      ring.style.left = ringX + 'px';
-      ring.style.top = ringY + 'px';
-      rafId = requestAnimationFrame(animateRing);
-    }
-    animateRing();
 
     document.addEventListener('mouseleave', () => {
-      cursor.classList.remove('visible');
-      ring.classList.remove('visible');
+      glow.classList.remove('visible');
     });
 
-    // Agrandar cursor al pasar por elementos interactivos
-    const hoverEls = document.querySelectorAll('a, button, .servicio-card, .stat-box, .testimonio-card, .audio-card, .play-btn, .progress-bar');
-    hoverEls.forEach(el => {
-      el.addEventListener('mouseenter', () => {
-        cursor.classList.add('hovering');
-        ring.classList.add('hovering');
-      });
-      el.addEventListener('mouseleave', () => {
-        cursor.classList.remove('hovering');
-        ring.classList.remove('hovering');
-      });
-    });
+    // Movimiento suave con lerp
+    (function animateGlow() {
+      glowX += (targetX - glowX) * 0.08;
+      glowY += (targetY - glowY) * 0.08;
+      glow.style.left = glowX + 'px';
+      glow.style.top  = glowY + 'px';
+      requestAnimationFrame(animateGlow);
+    })();
 
     // Navbar scroll
     const navbar = document.getElementById('navbar');
