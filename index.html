@@ -660,12 +660,9 @@
 
     .galeria-item {
       background: var(--negro-medio);
-      aspect-ratio: 4/3;    /* todas la misma proporción */
+      aspect-ratio: 4/3;
       overflow: hidden;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      position: relative;  /* necesario para que img absolute funcione */
     }
 
     /* Sin foto destacada grande — todas iguales */
@@ -675,14 +672,16 @@
       aspect-ratio: 4/3;
     }
 
-    /* Imagen dentro del item */
+    /* Imagen dentro del item — posición absoluta garantiza que llene todo */
     .galeria-item img {
+      position: absolute;
+      top: 0; left: 0;
       width: 100%;
       height: 100%;
-      object-fit: cover;
+      object-fit: cover;      /* recorta sin deformar */
+      object-position: center; /* centra el recorte */
       display: block;
       transition: transform 0.5s ease;
-      /* PROTECCIÓN — deshabilita drag y selección */
       pointer-events: none;
       user-select: none;
       -webkit-user-drag: none;
@@ -691,7 +690,6 @@
     /* Zoom suave al hacer hover */
     .galeria-item:hover img {
       transform: scale(1.05);
-      pointer-events: none;
     }
 
     /* Overlay dorado sutil al hover */
@@ -1436,9 +1434,9 @@
     <div class="galeria-grid">
       <!-- Mejores fotos primero — Pepe en acción -->
       <div class="galeria-item"><img src="locu12.jpeg"      alt="Pepe Mora conduciendo evento"></div>
-      <div class="galeria-item"><img src="locu20.jpg"       alt="Pepe Mora locutor profesional"></div>
       <div class="galeria-item"><img src="locu14.jpeg"      alt="Pepe Mora en evento"></div>
       <div class="galeria-item"><img src="locu13.jpeg"      alt="Pepe Mora maestro de ceremonias"></div>
+      <div class="galeria-item"><img src="locu15.jpeg"      alt="Pepe Mora locutor profesional"></div>
       <!-- Corporativos -->
       <div class="galeria-item"><img src="locu8.jpg"        alt="Evento corporativo Pepe Mora"></div>
       <div class="galeria-item"><img src="corporativa1.png" alt="Evento corporativo Pepe Mora"></div>
@@ -1453,8 +1451,7 @@
       <div class="galeria-item"><img src="matri4.png"       alt="Matrimonio conducido por Pepe Mora"></div>
       <div class="galeria-item"><img src="matri1.png"       alt="Matrimonio conducido por Pepe Mora"></div>
       <div class="galeria-item"><img src="matri2.jpg"       alt="Matrimonio conducido por Pepe Mora"></div>
-      <!-- Locuciones y más eventos -->
-      <div class="galeria-item"><img src="locu15.jpeg"      alt="Pepe Mora locutor"></div>
+      <!-- Más locuciones -->
       <div class="galeria-item"><img src="locu1.jpg"        alt="Locución profesional Pepe Mora"></div>
       <div class="galeria-item"><img src="locu2.jpg"        alt="Locución profesional Pepe Mora"></div>
       <div class="galeria-item"><img src="locu3.jpg"        alt="Locución profesional Pepe Mora"></div>
@@ -1464,11 +1461,12 @@
       <div class="galeria-item"><img src="locu7.jpg"        alt="Locución profesional Pepe Mora"></div>
       <div class="galeria-item"><img src="corporativa2.png" alt="Evento corporativo Pepe Mora"></div>
       <div class="galeria-item"><img src="corporativa7.jpg" alt="Evento corporativo Pepe Mora"></div>
+      <div class="galeria-item"><img src="locu9.jpeg"       alt="Pepe Mora en evento"></div>
+      <div class="galeria-item"><img src="locu11.jpeg"      alt="Pepe Mora maestro de ceremonias"></div>
       <!-- Premiaciones -->
       <div class="galeria-item"><img src="premiacion1.png"  alt="Premiación conducida por Pepe Mora"></div>
       <div class="galeria-item"><img src="premiacion2.png"  alt="Premiación conducida por Pepe Mora"></div>
-      <div class="galeria-item"><img src="locu9.jpeg"       alt="Pepe Mora en evento"></div>
-      <div class="galeria-item"><img src="locu11.jpeg"      alt="Pepe Mora maestro de ceremonias"></div>
+      <div class="galeria-item"><img src="locu10.jpeg"      alt="Pepe Mora en evento"></div>
     </div>
   </section>
 
